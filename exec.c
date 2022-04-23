@@ -137,7 +137,7 @@ exec(char *path, char **argv)
   for(; a < sz ; a += PGSIZE){
       cprintf("encrypt in exec\n");
       if(mencrypt((char *)a,1)!=0){
-       cprintf("encryption error\n");
+       cprintf("encryption error\n\n");
       }
     }
 

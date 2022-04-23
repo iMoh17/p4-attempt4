@@ -167,28 +167,20 @@ growproc(int n)
       return -1;
       
     }
-    // uint a;
-    // a = PGROUNDUP(sz);
-   // cprintf("encrypt growth\n");
-    // mencrypt((char *)a,n/PGSIZE);
-
-
-    // for(; a < sz + n; a += PGSIZE){
-    //   cprintf("encrypt growth\n");
-    //   if(mencrypt((char *)a,1)==0){
-    //    cprintf("encryption error\n");
-    //   }
+    uint a;
+    a = PGROUNDUP(sz);
+    // for (; a < sz + n; a += PGSIZE){
+    //   cprintf("growth in ecrypt \n");
+    // 	mencrypt((char*)a, 1);
     // }
+    mencrypt((char*) a, n/PGSIZE);
+    
   } else if(n < 0){
     if((sz = deallocuvm(curproc->pgdir, sz, sz + n)) == 0)
       return -1;
   }
 
   curproc->sz = sz;
-  uint a;
-  a = PGROUNDUP(sz);
-  cprintf("encrypt growth\n");
-  mencrypt((char *)a,n/PGSIZE);
   switchuvm(curproc);
   return 0;
 }

@@ -7,7 +7,7 @@
 #include "proc.h"
 #include "elf.h"
 
-//#include "proc.h"
+
 
 
 extern char data[];  // defined by kernel.ld

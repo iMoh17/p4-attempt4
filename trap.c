@@ -83,8 +83,8 @@ trap(struct trapframe *tf)
     addr = (char*)rcr2();
     if (mdecrypt(addr))
     {
-        //cprintf("HEEEEEEEERRRRRRRRRREEEEEEEE??????\n");
-        panic("p4Debug: Memory fault");
+       
+       // panic("p4Debug: Memory fault");
         exit();
     };
     break;
