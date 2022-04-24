@@ -594,48 +594,39 @@ int dump_rawphymem(char *physical_addr, char * buffer) {
 void clock_add(char *virtual_address){
   cprintf("addd tooo cloockk is called \n");
   struct proc *curproc = myproc();
-  
+  // char* pages[] = curproc->pages;
 
   if(curproc->cl_len < CLOCKSIZE){
     curproc->pages[curproc->cl_len] = virtual_address;
-
     curproc->cl_len = curproc->cl_len + 1;
   }
-  //  if(curproc->cl_len < clock->maxlen){
-  //   clock->pages[clock->len] = *pte;
-  //   clock->len = clock->len + 1;
-  //   curproc->clock = clock;
-  //   //cprintf("%d pages added for now\n",clock->len);
-  //   //change access bit 
-  // }
-  // else{
+  else{
   //   //annika 
-  //   struct pte_t pte_b = clock.pages[clock.buffer];
-  //   int found =0;
-  //   while(!found){
+  char* cur_va = curproc->pages[curproc->clock_hand];
+  pde_t* mypd = curproc->pgdir;
+  int found =0;
+  while(!found){
+    pte_t * pte = walkpgdir(mypd, cur_va, 0);
   //     //if pte_b's acces bit is 0 
-  //     if(!(*pte_b & PTE_A)){
-  //       clock.pages[clock.buffer] = pte;
+    if(!(*pte & PTE_A)){
+      //evict
+      curproc->pages[curproc->clock_hand] = virtual_address;
   //       //make sure pte's access bit is set to 1 
   //       //encrypt pte_b
-        
-  //       clock.buffer = clock.buffer+1
-  //       curproc->clock = clock;
-  //       found =1;
-  //     }
+      mencrypt(cur_va,1);//not sure 
+      curproc->clock_hand = curproc->clock_hand+1;
+      //curproc->pages = pages;
+      found =1;
+    }
   //     //else //acces bit is 1//
-  //     else{
+    else{
   //       //set acces bit to 0 
-  //       clock.buffer = clock.buffer+1
-  //       pte_b = clock.pages[(clock.buffer)%CLOCKSIZE];
-  //     }
-  //   }
-    
-
-
-  // }
-
-
+      *pte = *pte & ~PTE_A;
+      curproc->clock_hand = curproc->clock_hand+1;
+      cur_va = curproc->pages[(curproc->clock_hand)%CLOCKSIZE];
+    }
+  }
+  }
 }
 
 

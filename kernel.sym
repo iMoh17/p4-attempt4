@@ -1,5 +1,5 @@
 80100000 .text
-80109110 .rodata
+801091f4 .rodata
 8010a000 .data
 8010c5a0 .bss
 00000000 .debug_line
@@ -292,7 +292,7 @@
 801072b4 vector47
 80107a3d vector228
 80107287 vector42
-801090c0 notinq
+801091a7 notinq
 8010750f vector114
 80108818 uva2ka
 801077c1 vector175
