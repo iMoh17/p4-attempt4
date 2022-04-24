@@ -196,8 +196,8 @@ int             mencrypt(char *virtual_addr, int len);
 int             getpgtable(struct pt_entry* entries, int num,int wsetOnly);
 int             dump_rawphymem(char *physical_addr, char * buffer);
 int             mdecrypt(char *virtual_addr);
-void            clock_add(pte_t *pte);
-int             notinq(pte_t *pte);
+void            clock_add(char *virtual_addr);
+int             notinq(char *virtual_addr);
 
 
 

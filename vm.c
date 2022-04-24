@@ -431,6 +431,9 @@ int mdecrypt(char *virtual_addr) {
   //p4Debug: virtual_addr is a virtual address in this PID's userspace.
   struct proc * p = myproc();
   pde_t* mypd = p->pgdir;
+
+
+  
   //set the present bit to true and encrypt bit to false
   pte_t * pte = walkpgdir(mypd, virtual_addr, 0);
   if (!pte || *pte == 0) {
@@ -441,7 +444,7 @@ int mdecrypt(char *virtual_addr) {
   *pte = *pte & ~PTE_E;
   *pte = *pte | PTE_P;
   cprintf("p4Debug: pte is %x\n", *pte);
-  clock_add(pte);
+  clock_add((char*)P2V(PTE_ADDR(*pte)));
 
   
 
@@ -451,9 +454,7 @@ int mdecrypt(char *virtual_addr) {
   cprintf("p4Debug: mdecrypt: rounded down va is %p\n", virtual_addr);
 
   char * kvp = uva2ka(mypd, virtual_addr);
-  //cprintf("what happens here ?????? %s\n",kvp);
   if (!kvp || *kvp == 0) {
-    //cprintf("what happens here ?????? %s\n",kvp);
     return -1;
   }
   
@@ -505,6 +506,8 @@ int mencrypt(char *virtual_addr, int len) {
       slider += PGSIZE;
       continue;
     }
+    //change reference bit 
+    
     for (int offset = 0; offset < PGSIZE; offset++) {
       *slider = *slider ^ 0xFF;
       slider++;
@@ -514,6 +517,7 @@ int mencrypt(char *virtual_addr, int len) {
       cprintf("p4Debug: translate failed!");
       return -1;
     }
+    *mypte = *mypte & ~PTE_A;
   }
   switchuvm(myproc());
   return 0;
@@ -543,7 +547,7 @@ int getpgtable(struct pt_entry* pt_entries, int num,int wsetOnly) {
     //   continue;
     // }
 
-    if (wsetOnly &&  notinq(pte)) {
+    if (wsetOnly &&  notinq((char*)P2V(PTE_ADDR(*pte)))) {
       if (uva == 0 || i == num) break;
       continue;
     }
@@ -587,18 +591,15 @@ int dump_rawphymem(char *physical_addr, char * buffer) {
 }
 
 //add clock algo here 
-void clock_add(pte_t *pte){
+void clock_add(char *virtual_address){
   cprintf("addd tooo cloockk is called \n");
   struct proc *curproc = myproc();
   
 
   if(curproc->cl_len < CLOCKSIZE){
-    curproc->pages[curproc->cl_len] = pte;
-    curproc->cl_len = curproc->cl_len + 1;
+    curproc->pages[curproc->cl_len] = virtual_address;
 
-   
-    //cprintf("%d pages added for now\n",clock->len);
-    //change access bit 
+    curproc->cl_len = curproc->cl_len + 1;
   }
   //  if(curproc->cl_len < clock->maxlen){
   //   clock->pages[clock->len] = *pte;
@@ -638,14 +639,11 @@ void clock_add(pte_t *pte){
 }
 
 
-int notinq(pte_t *pte){
+int notinq(char *virtual_address){
   struct proc *curproc = myproc();
 
-  // cprintf("pte targ ==== %s\n",pte);
-  //struct clock_q *clock = curproc->clock;
-
   for(int i=0; i < curproc->cl_len;i++){
-    if(pte == curproc->pages[i]){
+    if(virtual_address == curproc->pages[i]){
       return 0;
     }
   }

@@ -25,7 +25,7 @@ exec(char *path, char **argv)
   int len=0;
   int clock_hand = 0;
   for(int i=0;i<CLOCKSIZE;i++){
-     curproc->pages[i]=(uint)0;
+     curproc->pages[i]=0;
   }
   curproc->cl_len = len;
   curproc->clock_hand = clock_hand;
@@ -137,7 +137,7 @@ exec(char *path, char **argv)
   for(; a < sz ; a += PGSIZE){
       cprintf("encrypt in exec\n");
       if(mencrypt((char *)a,1)!=0){
-       cprintf("encryption error\n\n");
+       cprintf("encryption error\n");
       }
     }
 

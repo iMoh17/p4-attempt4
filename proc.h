@@ -57,8 +57,8 @@ struct proc {
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
-  pte_t* pages[CLOCKSIZE];    
-  //pte_t pages[CLOCKSIZE];   
+  //pte_t* pages[CLOCKSIZE];    
+  char* pages[CLOCKSIZE];   
   int clock_hand;
   int cl_len; 
 };
